@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='.jpg') }}"); 
+            background-size: cover; /* This will make the image cover the entire background */
+            background-position: center; /* Center the background image */
+            font-family: Arial, sans-serif; /* Set a fallback font family */
+            color: black; /* Set text color to black */
+            padding: 20px; /* Add padding to the body */
+            box-sizing: border-box; /* Include padding in the width calculation */
+        }
+
+        h1, h2, p {
+            text-align: center; /* Center align headings and paragraphs */
+            color: black; /* Set text color to black */
+        }
+
+        h1 {
+            margin-top: 0; /* Remove top margin from h1 */
+        }
+
+        p {
+            margin-bottom: 20px; /* Add bottom margin to paragraphs */
+        }
+
+        ul {
+            list-style-type: none; /* Remove default bullet points */
+            padding: 0; /* Remove default padding */
+            text-align: left; /* Align list items to the left */
+        }
+
+        ul li {
+            margin-bottom: 10px; /* Add bottom margin to list items */
+        }
+
+        strong {
+            font-weight: bold; /* Make strong elements bold */
+        }
+
+        /* Increase the size of the Predicted Population Trend */
+        .predicted-trend {
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prediction Result</h1>
+    <h2>{{ country }}'S Population Prediction for {{ year }}</h2>
+    
+    <p><strong>PREDICTED POPULATION:</strong> {{ predicted_pop }}</p>
+    
+    <p><strong>TEST SCORE:</strong> {{ accuracy }}%</p>
+    
+    <div id="populationGraph"></div>
+
+    <script>
+        var trace1 = {
+            x: {{ years|tojson }},
+            y: {{ populations|tojson }},
+            mode: 'line',
+            name: 'Previous Year\'s',
+            line: {
+                width: 10 // Increase the line width here
+            }
+        };
+
+        var trace2 = {
+            x: [{{ year }}],
+            y: [{{ predicted_pop }}],
+            mode: 'markers',
+            marker: {
+                symbol: 'star',
+                size: 20,
+                color: 'red'
+            },
+            name: 'Predicted {{ year }}'
+        };
+
+        var data = [trace1, trace2];
+
+        var layout = {
+            title: '{{ country }}\'s Population',
+            xaxis: {
+                title: 'Year'
+            },
+            yaxis: {
+                title: 'Population'
+            }
+        };
+
+        Plotly.newPlot('populationGraph', data, layout);
+    </script>
+    <p style="text-align: center;" class="predicted-trend"><strong>Predicted Population Trend:</strong> {% if trend == "Increase" %}<span style="color:green;">{{ trend }}</span>{% elif trend == "Decrease" %}<span style="color:red;">{{ trend }}</span>{% else %}{{ trend }}{% endif %}</p>
+    
+    {% if trend == "Increase" %}
+        <p style="text-align: left;"><strong><h3>Reasons for Increase:</h3></strong></p>
+        <ul>
+            {% for reason in reasons %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+    {% elif trend == "Decrease" %}
+        <p style="text-align: left;"><strong><h3>Reasons for Decrease:</h3></strong></p>
+        <ul>
+            {% for reason in reasons %}
+                <li>{{ reason }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

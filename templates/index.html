@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Prediction System</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url("{{ url_for('static', filename='4.jpg') }}"); 
+            background-size: cover; 
+            background-position: center; 
+        }
+
+        h1 {
+            font-size: 32px; 
+            color: black; 
+            text-align: center; 
+        }
+
+        .form-container {
+            background-color: rgba(169, 169, 169, 0.7);  /* light dark grey shade */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center; 
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            color: #555;
+            width: 200px; 
+        }
+
+        ::placeholder {
+            color: #999;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: black;  /* Change button color to black */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #333;  /* Darken button color on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Population Prediction System</h1>
+        <form method="POST" action="/index">
+            <label for="country">Select Country:</label>
+            <br>
+            <select name="country" id="country">
+                {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <label for="year">Enter Year:</label>
+            <br>
+            <input type="text" name="year" id="year" placeholder="Please Enter The Year">
+            <br><br>
+            <input type="submit" value="Predict">
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            /* Set background image */
+            background-image: url("{{ url_for('static', filename='5.jpg') }}"); 
+            background-size: cover; 
+            background-position: center; 
+        }
+
+        .message-container {
+            background-color: rgba(192, 192, 192, 0.7); /* Semi-transparent light grey background */
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        h1, h2, p {
+            color: black; /* Set text color to black */
+        }
+
+        /* Styling for the button */
+        button {
+            padding: 10px 20px;
+            background-color: black; /* Set button background color to black */
+            color: #fff; /* Set text color to white */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #333; /* Darken button color on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <h1>Error</h1>
+        <h2><b>Something went wrong. Please make sure you have entered the prediction year.</b></h2>
+        <!-- Button to redirect to index.html -->
+        <button onclick="window.location.href='http://127.0.0.1:5000/'">Home</button>
+    </div>
+</body>
+</html>

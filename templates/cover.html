@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Page</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            background-image: url("{{ url_for('static', filename='3.jpg') }}"); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center content vertically */
+        }
+
+        .title-container {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            position: relative; /* To position location result */
+        }
+
+        .button-container {
+            background-color: rgba(255, 255, 255, 0.2); /* Adds a white background with opacity */
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Increased gap between buttons */
+        }
+
+        h1 {
+            font-size: 72px; /* Increased font size */
+            margin: 0;
+            color: white; /* Set text color to white */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Optional: Add text shadow for better readability */
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 18px; /* Reduced font size */
+            font-weight: bold; /* Set text to bold */
+            background-color: #b0b0b0; /* Slightly darker grey shade for the buttons */
+            color: black; /* Set text color to black */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #909090; /* Darker grey for hover effect */
+        }
+
+        #locationResultContainer {
+            width: 80%; /* Reduced width */
+            max-width: 400px; /* Maximum width */
+            text-align: center;
+            padding: 10px; /* Reduced padding */
+            position: absolute;
+            bottom: 20px; /* Position near the bottom */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(128, 128, 128, 0.8); /* Grey background with opacity */
+            border-radius: 10px;
+            display: none; /* Hide initially */
+        }
+
+        #locationResult {
+            color: black; /* Set result text color to black */
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="title-container">
+        <h1>Population Prediction Analysis</h1>
+    </div>
+    <div class="content-container">
+        <div class="button-container">
+            <button class="button" onclick="window.location.href='/index'">POPULATION PREDICTION</button>
+            <button class="button" id="getLocationBtn">GET LOCATION</button>
+            <button class="button" onclick="window.location.href='/button3'">ABOUT</button>
+        </div>
+    </div>
+    <div id="locationResultContainer">
+        <div id="locationResult"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#getLocationBtn').click(function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition, showError);
+                } else {
+                    $('#locationResult').text('Geolocation is not supported by this browser.');
+                    $('#locationResultContainer').show(); // Show the container
+                }
+            });
+
+            function showPosition(position) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_location',
+                    data: JSON.stringify({
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        $('#locationResult').text(response.message);
+                        $('#locationResultContainer').show(); // Show the container
+                    },
+                    error: function(error) {
+                        console.log(error);
+                        $('#locationResult').text('Error fetching location. Please try again later.');
+                        $('#locationResultContainer').show(); // Show the container
+                    }
+                });
+            }
+
+            function showError(error) {
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        $('#locationResult').text('User denied the request for Geolocation.');
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        $('#locationResult').text('Location information is unavailable.');
+                        break;
+                    case error.TIMEOUT:
+                        $('#locationResult').text('The request to get user location timed out.');
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        $('#locationResult').text('An unknown error occurred.');
+                        break;
+                }
+                $('#locationResultContainer').show(); // Show the container
+            }
+        });
+    </script>
+</body>
+</html>
